@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     res.json(schemes);
   })
   .catch(err => {
-    res.status(500).json({ message: 'Failed to get schemes' });
+    res.status(500).json({ message: 'Failed to get schemes', error : err.message});
   });
 });
 
@@ -38,11 +38,11 @@ router.get('/:id/steps', (req, res) => {
     if (steps.length) {
       res.json(steps);
     } else {
-      res.status(404).json({ message: 'Could not find steps for given scheme' })
+      res.status(404).json({ message: 'Could not find steps for given scheme', error : err.message })
     }
   })
   .catch(err => {
-    res.status(500).json({ message: 'Failed to get steps' });
+    res.status(500).json({ message: 'Failed to get steps', error : err.message });
   });
 });
 
