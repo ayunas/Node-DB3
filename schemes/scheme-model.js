@@ -5,7 +5,8 @@ module.exports = {
     findById,
     findSteps,
     add,
-    update
+    update,
+    remove
 }
 
 function find() {
@@ -38,11 +39,12 @@ function update(changes, id) {
     // return db('schemes').update(changes).where({id})
     return db.raw(`UPDATE schemes SET scheme_name = '${changes.scheme_name}' WHERE id = ${Number(id)};`)
     .then( () => findById(id))
-
     // return db('schemes').where({id}).update(changes);
 }
 
-
-
-
+function remove(id) {
+    return db.raw(`DELETE FROM schemes WHERE id = ?`, id)
+    // .then(arr => findById(id).then(resp => resp).catch(err => err))
+    // return db('schemes').where({id}).del()
+}
 
