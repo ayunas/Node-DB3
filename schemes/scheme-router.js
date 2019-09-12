@@ -18,7 +18,8 @@ router.get('/:id', (req, res) => {
   const { id } = req.params;
 
   Schemes.findById(id)
-  .then(scheme => {
+  .then(([scheme]) => {
+    console.log(scheme);
     if (scheme) {
       res.json(scheme);
     } else {
@@ -36,6 +37,7 @@ router.get('/:id/steps', (req, res) => {
   Schemes.findSteps(id)
   .then(steps => {
     if (steps.length) {
+      steps.forEach(step => delete step.scheme_id);  //README specified to not return the scheme_id of the step
       res.json(steps);
     } else {
       res.status(404).json({ message: 'Could not find steps for given scheme', error : err.message })
@@ -50,11 +52,11 @@ router.post('/', (req, res) => {
   const schemeData = req.body;
 
   Schemes.add(schemeData)
-  .then(scheme => {
+  .then( ([scheme]) => {
     res.status(201).json(scheme);
   })
   .catch (err => {
-    res.status(500).json({ message: 'Failed to create new scheme' });
+    res.status(500).json({ message: 'Failed to create new scheme', error : err.message });
   });
 });
 
@@ -86,15 +88,17 @@ router.put('/:id', (req, res) => {
   .then(scheme => {
     if (scheme) {
       Schemes.update(changes, id)
-      .then(updatedScheme => {
+      .then(([updatedScheme]) => {
+        updatedScheme.message = "Updated Scheme";
         res.json(updatedScheme);
-      });
+      })
+      .catch(err => res.status(500).json({error : err.message}))
     } else {
       res.status(404).json({ message: 'Could not find scheme with given id' });
     }
   })
   .catch (err => {
-    res.status(500).json({ message: 'Failed to update scheme' });
+    res.status(500).json({ message: 'Failed to update scheme', error : err.message });
   });
 });
 
